@@ -1,0 +1,31 @@
+{
+  "name": "walou-dice-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:dev": "jest --watchAll",
+    "start": "ts-node src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuillaumeNury/WalouDiceGame.git"
+  },
+  "keywords": [],
+  "author": "Guillaume Nury",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GuillaumeNury/WalouDiceGame/issues"
+  },
+  "homepage": "https://github.com/GuillaumeNury/WalouDiceGame#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^23.3.2",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "ts-jest": "^23.10.3",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.1"
+  }
+}
