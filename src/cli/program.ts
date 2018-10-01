@@ -2,23 +2,27 @@ import program from 'commander';
 import * as inquirer from 'inquirer';
 import { Game, Player, ScoreStep } from '../core/models';
 import { GameService } from '../core/services';
+import { Reporter } from './reporter.class';
 
 program
   .version('1.0.0')
   .command('play')
+  .option('--example', 'Add example players.')
   .description('Demarrer une nouvelle partie')
-  .action(() => main());
+  .action(({ example }) => main(!!example));
 
 program.parse(process.argv);
 
-async function main() {
-  const players = await _getPlayers();
+async function main(exampleMode: boolean) {
+  const players = exampleMode
+    ? [new Player('Marie'), new Player('Guillaume'), new Player('David')]
+    : await _getPlayers();
 
   const game = new Game();
   game.addPlayers(...players);
   game.setNextPlayer();
 
-  const gameService = new GameService();
+  const gameService = new GameService(new Reporter());
 
   while (true) {
     const points = await _getCurrentPlayerPoints(game);

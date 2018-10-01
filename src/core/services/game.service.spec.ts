@@ -1,23 +1,23 @@
-import { Game, Player } from "../models";
-import { ScoreStep } from "../models/score-step.model";
-import { GameService } from "./game.service";
+import { Game, NoopReporter, Player } from '../models';
+import { ScoreStep } from '../models/score-step.model';
+import { GameService } from './game.service';
 
-describe("Service: GameService", () => {
+describe('Service: GameService', () => {
   let gameService: GameService;
 
   beforeEach(() => {
-    gameService = new GameService();
+    gameService = new GameService(new NoopReporter());
   });
-  describe("Method: play()", () => {
-    it("should throw error when no players", () => {
+  describe('Method: play()', () => {
+    it('should throw error when no players', () => {
       const game = new Game();
 
       expect(() => gameService.scorePoints(game, 42)).toThrow();
     });
 
-    it("should add score when positive points", () => {
+    it('should add score when positive points', () => {
       const game = new Game();
-      const player = new Player("player");
+      const player = new Player('player');
       game.addPlayers(player);
       game.setNextPlayer();
 
@@ -26,9 +26,9 @@ describe("Service: GameService", () => {
       expect(player.currentScore).toBe(42);
     });
 
-    it("should not add score when 0 points and score is 0", () => {
+    it('should not add score when 0 points and score is 0', () => {
       const game = new Game();
-      const player = new Player("player");
+      const player = new Player('player');
       game.addPlayers(player);
       game.setNextPlayer();
 
@@ -37,9 +37,9 @@ describe("Service: GameService", () => {
       expect(player.currentScore).toBe(0);
     });
 
-    it("should not add score when 0 points and score is 0", () => {
+    it('should not add score when 0 points and score is 0', () => {
       const game = new Game();
-      const player = new Player("player");
+      const player = new Player('player');
       game.addPlayers(player);
       game.setNextPlayer();
 
@@ -48,10 +48,10 @@ describe("Service: GameService", () => {
       expect(player.currentScore).toBe(0);
     });
 
-    it("should add star when 0 points", () => {
+    it('should add star when 0 points', () => {
       const game = new Game();
       const step = new ScoreStep(50);
-      const player = new Player("player");
+      const player = new Player('player');
 
       player.addScoreStep(step);
       game.addPlayers(player);
@@ -64,10 +64,10 @@ describe("Service: GameService", () => {
       expect(step.hasStar).toBe(true);
     });
 
-    it("should shot scoreStep when 0 points with starred step", () => {
+    it('should shot scoreStep when 0 points with starred step', () => {
       const game = new Game();
       const step = new ScoreStep(50);
-      const player = new Player("player");
+      const player = new Player('player');
 
       player.addScoreStep(step);
       game.addPlayers(player);
@@ -81,11 +81,11 @@ describe("Service: GameService", () => {
       expect(step.isShot).toBe(true);
     });
 
-    it("should shot player1 when player2 score same points", () => {
+    it('should shot player1 when player2 score same points', () => {
       const game = new Game();
 
-      const player1 = new Player("player1");
-      const player2 = new Player("player2");
+      const player1 = new Player('player1');
+      const player2 = new Player('player2');
 
       game.addPlayers(player1, player2);
       game.setNextPlayer();
@@ -103,8 +103,8 @@ describe("Service: GameService", () => {
     it("should shot player1 when player2 score 0 points and has a new scoreStep with player1's points", () => {
       const game = new Game();
 
-      const player1 = new Player("player1");
-      const player2 = new Player("player2");
+      const player1 = new Player('player1');
+      const player2 = new Player('player2');
 
       game.addPlayers(player1, player2);
 

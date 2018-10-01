@@ -1,6 +1,7 @@
-import { Game, Player, ScoreStep } from '../models';
+import { Game, IReporter, Player, ScoreStep } from '../models';
 
 export class GameService {
+  public constructor(private reporter: IReporter) {}
   public scorePoints(game: Game, points: number): void {
     const player = game.currentPlayer;
 
@@ -22,13 +23,16 @@ export class GameService {
       .filter(p => p.currentScore === player.currentScore);
 
     if (playerWithSameScore) {
-      this._tryShoot(playerWithSameScore);
+      const shotStep = this._tryShoot(playerWithSameScore);
+      this.reporter.onPlayerShot(player, playerWithSameScore, shotStep);
+
       this._shootOtherPlayers(game, playerWithSameScore);
     }
   }
 
   private _applyPointsOnPlayer(points: number, player: Player) {
     if (points === 0) {
+      this.reporter.onZeroScore(player);
       this._tryAddStar(player);
     } else {
       player.addScoreStep(new ScoreStep(player.currentScore + points));
@@ -36,14 +40,21 @@ export class GameService {
   }
 
   private _tryAddStar(player: Player): void {
-    if (player.lastScoreStep) {
-      player.lastScoreStep.addStar();
+    const lastScoreStep = player.lastScoreStep;
+
+    if (lastScoreStep) {
+      lastScoreStep.addStar();
+
+      if (lastScoreStep.isShot) {
+        this.reporter.onDoubleStarOnScoreStep(player, lastScoreStep);
+      }
     }
   }
 
-  private _tryShoot(player: Player): void {
-    if (player.lastScoreStep) {
-      player.lastScoreStep.shot();
-    }
+  private _tryShoot(player: Player): ScoreStep {
+    const step = player.lastScoreStep as ScoreStep;
+    step.shot();
+
+    return step;
   }
 }
