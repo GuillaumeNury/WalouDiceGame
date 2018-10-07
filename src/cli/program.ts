@@ -1,7 +1,7 @@
+import { Game, Player, ScoreStep } from '@core/models';
+import { GameService } from '@core/services';
 import program from 'commander';
 import * as inquirer from 'inquirer';
-import { Game, Player, ScoreStep } from '../core/models';
-import { GameService } from '../core/services';
 import { Reporter } from './reporter.class';
 
 program

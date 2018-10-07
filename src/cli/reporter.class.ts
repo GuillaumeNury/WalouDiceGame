@@ -1,4 +1,4 @@
-import { IReporter, Player, ScoreStep } from '../core/models';
+import { IReporter, Player, ScoreStep } from '@core/models';
 
 const getLossString = (player: Player, shotScoreStep: ScoreStep) =>
   `redescend à ${player.currentScore} points (-${shotScoreStep.points -
