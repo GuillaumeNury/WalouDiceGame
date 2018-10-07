@@ -1,34 +1,16 @@
-import { ScoreStep } from "./score-step.model";
-export class Player {
-  public get name(): string {
-    return this._name;
-  }
+import { IScoreStep, ScoreStep } from './score-step.model';
 
-  public get scoreSteps(): ScoreStep[] {
-    return this._scoreSteps.filter(step => !step.isShot);
-  }
+export interface IPlayer {
+  name: string;
+  scoreSteps: IScoreStep[];
+}
 
-  public get lastScoreStep(): ScoreStep | null {
-    return this.scoreSteps.length
-      ? this.scoreSteps[this.scoreSteps.length - 1]
-      : null;
-  }
-
-  public get currentScore(): number {
-    const lastScoreStep = this.lastScoreStep;
-
-    return lastScoreStep ? lastScoreStep.points : 0;
-  }
-
-  private _name: string;
-  private _scoreSteps: ScoreStep[];
+export class Player implements IPlayer {
+  public name: string;
+  public scoreSteps: ScoreStep[];
 
   public constructor(name: string) {
-    this._name = name;
-    this._scoreSteps = [];
-  }
-
-  public addScoreStep(scoreStep: ScoreStep) {
-    this._scoreSteps = [...this._scoreSteps, scoreStep];
+    this.name = name;
+    this.scoreSteps = [];
   }
 }

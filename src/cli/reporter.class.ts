@@ -1,27 +1,30 @@
-import { IReporter, Player, ScoreStep } from '@core/models';
+import { IPlayer, IReporter, IScoreStep } from '@core/models';
+import { PlayerService } from '@core/services';
 
-const getLossString = (player: Player, shotScoreStep: ScoreStep) =>
-  `redescend à ${player.currentScore} points (-${shotScoreStep.points -
-    player.currentScore} pts)`;
+const getLossString = (currentScore: number, shotScoreStep: IScoreStep) =>
+  `redescend à ${currentScore} points (-${shotScoreStep.points -
+    currentScore} pts)`;
 
 export class Reporter implements IReporter {
+  public constructor(private playerService: PlayerService) {}
+
   onPlayerShot = (
-    player: Player,
-    shotPlayer: Player,
-    shotScoreStep: ScoreStep,
+    player: IPlayer,
+    shotPlayer: IPlayer,
+    shotScoreStep: IScoreStep,
   ) =>
     console.log(
       `${player.name} shoot ${shotPlayer.name} qui ${getLossString(
-        shotPlayer,
+        this.playerService.currentScore(shotPlayer),
         shotScoreStep,
       )} !`,
     );
-  onZeroScore = (player: Player) =>
+  onZeroScore = (player: IPlayer) =>
     console.log(`Pour ${player.name}, c'est WALOOOOO !`);
-  onDoubleStarOnScoreStep = (player: Player, shotScoreStep: ScoreStep) =>
+  onDoubleStarOnScoreStep = (player: IPlayer, shotScoreStep: IScoreStep) =>
     console.log(
       `Et deux étoiles pour ${player.name} qui ${getLossString(
-        player,
+        this.playerService.currentScore(player),
         shotScoreStep,
       )} !`,
     );

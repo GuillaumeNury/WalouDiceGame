@@ -1,35 +1,29 @@
-export class ScoreStep {
-  public get points(): number {
-    return this._points;
-  }
+export interface IScoreStep {
+  points: number;
+  hasStar: boolean;
+  isShot: boolean;
+}
 
-  public get hasStar(): boolean {
-    return this._hasStar;
-  }
-
-  public get isShot(): boolean {
-    return this._isShot;
-  }
-
-  private _hasStar: boolean;
-  private _isShot: boolean;
-  private _points: number;
+export class ScoreStep implements IScoreStep {
+  public hasStar: boolean;
+  public isShot: boolean;
+  public points: number;
 
   public constructor(points: number) {
-    this._hasStar = false;
-    this._isShot = false;
-    this._points = points;
+    this.hasStar = false;
+    this.isShot = false;
+    this.points = points;
   }
 
   public addStar(): void {
-    if (this._hasStar) {
+    if (this.hasStar) {
       this.shot();
     } else {
-      this._hasStar = true;
+      this.hasStar = true;
     }
   }
 
   public shot(): void {
-    this._isShot = true;
+    this.isShot = true;
   }
 }

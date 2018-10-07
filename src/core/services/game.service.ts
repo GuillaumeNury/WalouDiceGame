@@ -1,60 +1,94 @@
-import { Game, IReporter, Player, ScoreStep } from '../models';
+import { IGame, IPlayer, IReporter, IScoreStep } from '@core/models';
+import { replaceItem } from '../utils';
+import { PlayerService } from './player.service';
 
 export class GameService {
-  public constructor(private reporter: IReporter) {}
-  public scorePoints(game: Game, points: number): void {
+  public constructor(
+    private reporter: IReporter,
+    private playerService: PlayerService,
+  ) {}
+
+  public setNextPlayer(game: IGame): IGame {
+    if (!game.players.length) {
+      return game;
+    }
+
+    const currentPlayerIndex = game.currentPlayer
+      ? game.players.indexOf(game.currentPlayer)
+      : -1;
+    const newIndex = (currentPlayerIndex + 1) % game.players.length;
+
+    return {
+      ...game,
+      currentPlayer: game.players[newIndex],
+    };
+  }
+
+  public scorePoints(game: IGame, points: number): IGame {
     const player = game.currentPlayer;
 
     if (!player) {
       throw new Error('[GameService] No current player.');
     }
 
-    this._applyPointsOnPlayer(points, player);
-    this._shootOtherPlayers(game, player);
+    game = this._applyPointsOnPlayer(game, points, player);
+    return this._shootOtherPlayers(game, player);
   }
 
-  private _shootOtherPlayers(game: Game, player: Player): void {
+  private _shootOtherPlayers(game: IGame, player: IPlayer): IGame {
     const [playerWithSameScore] = game.players
       // Try to shoot other player only
       .filter(p => p !== player)
       // Player with a score of 0 cannot be shot
-      .filter(p => p.currentScore > 0)
+      .filter(p => this.playerService.currentScore(p) > 0)
       // get players with same score
-      .filter(p => p.currentScore === player.currentScore);
+      .filter(
+        p =>
+          this.playerService.currentScore(p) ===
+          this.playerService.currentScore(player),
+      );
 
     if (playerWithSameScore) {
-      const shotStep = this._tryShoot(playerWithSameScore);
+      const shotStep = this.playerService.lastScoreStep(
+        playerWithSameScore,
+      ) as IScoreStep;
+      game = this._tryShoot(game, playerWithSameScore);
       this.reporter.onPlayerShot(player, playerWithSameScore, shotStep);
 
-      this._shootOtherPlayers(game, playerWithSameScore);
+      return this._shootOtherPlayers(game, playerWithSameScore);
     }
+
+    return game;
   }
 
-  private _applyPointsOnPlayer(points: number, player: Player) {
+  private _applyPointsOnPlayer(
+    game: IGame,
+    points: number,
+    player: IPlayer,
+  ): IGame {
+    let playerWithPoints: IPlayer;
+
     if (points === 0) {
       this.reporter.onZeroScore(player);
-      this._tryAddStar(player);
-    } else {
-      player.addScoreStep(new ScoreStep(player.currentScore + points));
+      playerWithPoints = this.playerService.addStar(player, this.reporter);
     }
+
+    playerWithPoints = this.playerService.addPoints(player, points);
+
+    return {
+      ...game,
+      players: replaceItem(game.players, player, playerWithPoints),
+    };
   }
 
-  private _tryAddStar(player: Player): void {
-    const lastScoreStep = player.lastScoreStep;
+  private _tryShoot(game: IGame, player: IPlayer): IGame {
+    const shotStep = this.playerService.lastScoreStep(player) as IScoreStep;
+    const newPlayer = this.playerService.shoot(player);
+    this.reporter.onPlayerShot(player, player, shotStep);
 
-    if (lastScoreStep) {
-      lastScoreStep.addStar();
-
-      if (lastScoreStep.isShot) {
-        this.reporter.onDoubleStarOnScoreStep(player, lastScoreStep);
-      }
-    }
-  }
-
-  private _tryShoot(player: Player): ScoreStep {
-    const step = player.lastScoreStep as ScoreStep;
-    step.shot();
-
-    return step;
+    return {
+      ...game,
+      players: replaceItem(game.players, player, newPlayer),
+    };
   }
 }

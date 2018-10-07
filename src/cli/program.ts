@@ -1,5 +1,5 @@
-import { Game, Player, ScoreStep } from '@core/models';
-import { GameService } from '@core/services';
+import { Game, IGame, IScoreStep, Player } from '@core/models';
+import { GameService, PlayerService, ScoreStepService } from '@core/services';
 import program from 'commander';
 import * as inquirer from 'inquirer';
 import { Reporter } from './reporter.class';
@@ -18,22 +18,25 @@ async function main(exampleMode: boolean) {
     ? [new Player('Marie'), new Player('Guillaume'), new Player('David')]
     : await _getPlayers();
 
-  const game = new Game();
-  game.addPlayers(...players);
-  game.setNextPlayer();
-
-  const gameService = new GameService(new Reporter());
+  let game: IGame = new Game(...players);
+  const scoreStepService = new ScoreStepService();
+  const playerService = new PlayerService(scoreStepService);
+  const gameService = new GameService(
+    new Reporter(playerService),
+    playerService,
+  );
+  game = gameService.setNextPlayer(game);
 
   while (true) {
     const points = await _getCurrentPlayerPoints(game);
     gameService.scorePoints(game, +points);
 
     _printGameStatus(game);
-    game.setNextPlayer();
+    game = gameService.setNextPlayer(game);
   }
 }
 
-function _printGameStatus(game: Game): void {
+function _printGameStatus(game: IGame): void {
   console.log();
   const headers = game.players.map(p => p.name).join('\t\t\t');
   const linesCount = game.players.reduce(
@@ -51,12 +54,16 @@ function _printGameStatus(game: Game): void {
   console.log();
 }
 
-function _getScoreStepString(step: ScoreStep): string {
+function _getScoreStepString(step: IScoreStep): string {
   if (!step) {
     return '';
   }
 
-  return step.hasStar ? `${step.points} *` : `${step.points}`;
+  return step.isShot
+    ? `\e[9m${step.points}\e[0m`
+    : step.hasStar
+      ? `${step.points} *`
+      : `${step.points}`;
 }
 
 async function _getPlayers(): Promise<Player[]> {
@@ -78,7 +85,7 @@ async function _getPlayers(): Promise<Player[]> {
   return Object.keys(playerDict).map(k => new Player(playerDict[k]));
 }
 
-async function _getCurrentPlayerPoints(game: Game): Promise<number> {
+async function _getCurrentPlayerPoints(game: IGame): Promise<number> {
   const player = game.currentPlayer as Player;
   const { points } = await inquirer.prompt<{
     points: string;
