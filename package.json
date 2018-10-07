@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "test:dev": "jest --watchAll",
-    "start": "ts-node src/app.ts"
+    "start:cli": "ts-node src/cli/program.ts",
+    "start:app": "vue-cli-service serve src/app/waloo-dice-game/src/main.ts",
+    "build:app": "vue-cli-service build src/app/waloo-dice-game/src/main.ts --dest docs"
   },
   "repository": {
     "type": "git",
@@ -21,17 +23,24 @@
   "homepage": "https://github.com/GuillaumeNury/WalouDiceGame#readme",
   "dependencies": {
     "commander": "^2.18.0",
-    "inquirer": "^6.2.0"
+    "inquirer": "^6.2.0",
+    "vue": "^2.5.17",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
     "@types/inquirer": "^0.0.43",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.11.3",
+    "@vue/cli-plugin-typescript": "^3.0.4",
+    "@vue/cli-service": "^3.0.4",
     "jest": "^23.6.0",
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.3",
     "ts-node": "^7.0.1",
-    "typescript": "^3.1.1"
+    "typescript": "^3.1.1",
+    "vue-template-compiler": "^2.5.17"
   }
 }
