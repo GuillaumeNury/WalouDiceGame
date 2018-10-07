@@ -16,6 +16,7 @@ export default class App extends Vue {}
 <style>
 body {
   display: flex;
+  min-height: 100vh;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
