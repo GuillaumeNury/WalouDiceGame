@@ -23,10 +23,12 @@
   "homepage": "https://github.com/GuillaumeNury/WalouDiceGame#readme",
   "dependencies": {
     "commander": "^2.18.0",
+    "foundation-sites": "^6.5.0-rc.3",
     "inquirer": "^6.2.0",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

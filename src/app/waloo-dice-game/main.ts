@@ -1,10 +1,14 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
+import 'foundation-sites/dist/css/foundation.min.css';
+import Vue from 'vue';
+import 'vue-router';
+import App from './App.vue';
+import router from './router';
+import store from './store';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   store,
-  render: h => h(App)
-}).$mount('#app')
+  router,
+  render: h => h(App),
+}).$mount('#app');

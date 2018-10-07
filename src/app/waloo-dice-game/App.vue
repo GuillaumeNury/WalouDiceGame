@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <div class="logo">W</div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -9,21 +9,31 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from './components/HelloWorld.vue';
 
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
+@Component
 export default class App extends Vue {}
 </script>
 
 <style>
+body {
+  display: flex;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: auto;
+}
+.logo {
+  background-color: #fff;
+  color: #0e4db2;
+  font-size: 4rem;
+  padding: 0.5rem 1rem;
+  border: 0.25rem solid #0e4db2;
+  width: 7rem;
+  margin: auto;
+  margin-bottom: 2rem;
+  font-weight: bold;
 }
 </style>
