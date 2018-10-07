@@ -7,8 +7,8 @@
     "test": "jest",
     "test:dev": "jest --watchAll",
     "start:cli": "ts-node src/cli/program.ts",
-    "start:app": "vue-cli-service serve src/app/waloo-dice-game/main.ts",
-    "build:app": "vue-cli-service build src/app/waloo-dice-game/main.ts"
+    "start:app": "vue-cli-service serve",
+    "build:app": "vue-cli-service build"
   },
   "repository": {
     "type": "git",
